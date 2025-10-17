@@ -5,13 +5,16 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { useAuth } from './context/authContext';
 import PublicRoutes from './routes/PublicRoutes';
 import PrivateRoutes from './routes/PrivateRoutes';
+import Sidebar from './components/layout/Sidebar';
 
 function App() {
   const { isLogged, userPermissions, setUserPermissions, isLoading, setIsLogged, refreshAccessToken, accessToken, setAccessToken, getCurrentUser, getRole } = useAuth();
   const [isLoadingAuth, setIsLoadingAuth] = useState(true)
 
   useEffect(() => {
+    console.log(isLogged)
     setIsLoadingAuth(false);
+    // getCurrentUser();
   }, [isLogged]);
 
 
@@ -25,7 +28,16 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <React.Fragment>
-          {!isLogged ? (<PublicRoutes/>):(<PrivateRoutes/>) }
+          {!isLogged ? (<PublicRoutes />) : (
+            <>
+              <div className="app-layout">
+                <Sidebar />
+                <div className="content-area">
+                  <PrivateRoutes />
+                </div>
+              </div>
+            </>
+          )}
         </React.Fragment>
       </BrowserRouter>
     </div>

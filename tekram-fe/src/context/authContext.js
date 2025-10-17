@@ -9,24 +9,19 @@ export const AuthProvider = ({ children }) => {
     const [accessToken, setAccessToken] = useState(localStorage.getItem("token") ?? null);
     const [isLogged, setIsLogged] = useState(false);
     const [userPermissions, setUserPermissions] = useState([])
-
     // Fetch current user
     const getCurrentUser = useCallback(async () => {
         try {
             let token = localStorage.getItem("token");
-            if (!token) {
-                return; // failed refresh
-            }
-            const res = await axiosInstance.get('/auth/GetCurrentUser', {
-                headers: {
-                    Authorization: `Bearer ${token}`, // overrides interceptor token
-                },
-            });
+            console.log(token)
+            if (!token) return;
 
-            console.log(res);
+            const res = await axiosInstance.get('/auth/GetCurrentUser');
+            console.log("auth",res);
 
-            if (res.data.statusCode === 200) {
+            if (res.status === 200) {
                 const decoded = jwtDecode(token);
+                console.log(decoded)
                 setIsLogged(true);
             } else {
                 setIsLogged(false);
@@ -38,7 +33,9 @@ export const AuthProvider = ({ children }) => {
     }, [accessToken]);
 
     const logout = () => {
-
+        setIsLogged(false);
+        localStorage.clear();
+        window.location.href = "/";
     }
 
     useEffect(() => {
