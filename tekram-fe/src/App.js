@@ -6,7 +6,7 @@ import { useAuth } from './context/authContext';
 import PublicRoutes from './routes/PublicRoutes';
 import PrivateRoutes from './routes/PrivateRoutes';
 import Sidebar from './components/layout/Sidebar';
-
+import {ToastContainer} from 'react-toastify';
 function App() {
   const { isLogged, userPermissions, setUserPermissions, isLoading, setIsLogged, refreshAccessToken, accessToken, setAccessToken, getCurrentUser, getRole } = useAuth();
   const [isLoadingAuth, setIsLoadingAuth] = useState(true)
@@ -38,6 +38,7 @@ function App() {
               </div>
             </>
           )}
+          <ToastContainer />
         </React.Fragment>
       </BrowserRouter>
     </div>

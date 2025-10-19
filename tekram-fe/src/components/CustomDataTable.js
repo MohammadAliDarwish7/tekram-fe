@@ -1,50 +1,44 @@
-import { useEffect, useState } from "react";
-import { Spinner } from "react-bootstrap";
-import DataTable from "react-data-table-component"
-const CustomDataTable = ({ columns, fetchData, pageSize = 10 }) => {
-    const [data, setData] = useState([]);
-    const [totalRows, setTotalRows] = useState(0);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [loading, setLoading] = useState(false);
+import { useState, useEffect } from "react";
+import DataTable from "react-data-table-component";
 
-    const loadData = async (page) => {
-        setLoading(true);
-        try {
-            const response = await fetchData(page, pageSize);
-            setData(response.data);
-            setTotalRows(response.total);
-        } catch (error) {
-            console.error("Error fetching data:", error);
-        }
-        setLoading(false);
-    };
+const CustomDataTable = ({ columns, fetchData }) => {
+  const [data, setData] = useState([]);
+  const [totalRows, setTotalRows] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
-    useEffect(() => {
-        loadData(currentPage);
-    }, [currentPage]);
+  const loadData = async () => {
+    if (!fetchData) {
+      console.error("❌ fetchData prop is missing in CustomDataTable!");
+      return;
+    }
 
-    const handlePageChange = (page) => {
-        setCurrentPage(page);
-    };
+    
+    setLoading(true);
+    const result = await fetchData(page, pageSize);
+    console.log(result)
+    setData(result.data);
+    setTotalRows(result.total);
+    setLoading(false);
+  };
 
-    const handlePerRowsChange = async (newPerPage, page) => {
-        await loadData(page);
-    };
+  useEffect(() => {
+    loadData();
+  }, [page, pageSize]);
 
-    return (
-        <DataTable
-            columns={columns}
-            data={data}
-            progressPending={loading}
-            pagination
-            paginationServer
-            paginationTotalRows={totalRows}
-            paginationDefaultPage={currentPage}
-            onChangePage={handlePageChange}
-            onChangeRowsPerPage={handlePerRowsChange}
-            progressComponent={<Spinner animation="border" />}
-        />
-    );
+  return (
+    <DataTable
+      columns={columns}
+      data={data}
+      progressPending={loading}
+      pagination
+      paginationServer
+      paginationTotalRows={totalRows}
+      onChangePage={setPage}
+      onChangeRowsPerPage={setPageSize}
+    />
+  );
 };
 
 export default CustomDataTable;

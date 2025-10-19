@@ -1,24 +1,27 @@
 import { Container } from "react-bootstrap";
-import { axiosInstance } from "../../../hooks/axiosInstance";
+import { axiosInstance, imageUrl } from "../../../hooks/axiosInstance";
 import CustomDataTable from "../../../components/CustomDataTable";
-
+import { Link } from "react-router-dom"
+import { FaEye } from "react-icons/fa";
 const ListShops = () => {
     // Define columns for the table
     const columns = [
-        { name: 'ID', selector: row => row.id, sortable: true },
-        { name: 'Name', selector: row => row.name, sortable: true },
-        { name: 'Email', selector: row => row.email },
+        { name: '', selector: row => <img src={imageUrl + row.imageUrl} style={{ width: "80px" }} />, width: "110px" },
+        { name: 'Shop Name', selector: row => row.name, sortable: true },
+        { name: 'Status', selector: row => row.isOpen == true ? "Open" : "Closed", sortable: true },
+        { name: 'Currency', selector: row => row.currency },
+        {name: 'Options', selector: row => <Link to={'/shops/' + row.id} className="btn btn-sm btn-icons"><FaEye/></Link>}
     ];
 
-    const fetchUsers = async (page, pageSize) => {
+    const fetchShops = async (page, pageSize) => {
         try {
             const response = await axiosInstance.get('/shops', {
                 params: { page, pageSize }
             });
 
             return {
-                data: response.data.items, // your API should return { items: [], total: number }
-                total: response.data.total
+                data: response.data,
+                total: response.data.length
             };
         } catch (error) {
             console.error("Error fetching users:", error);
@@ -27,14 +30,21 @@ const ListShops = () => {
     };
 
 
-    return ( 
+    return (
         <>
             <Container className="mt-4">
-                <h2>Shops</h2>
-                <CustomDataTable columns={columns} fetchData={fetchUsers} pageSize={10} />
+                <div className="row">
+                    <div className="col-8">
+                        <h2>Shops</h2>
+                    </div>
+                    <div className="col">
+                        <Link to={"/shops/0"} className="btn btn-success">Add Shop</Link>
+                    </div>
+                </div>
+                <CustomDataTable columns={columns} fetchData={fetchShops} pageSize={10} />
             </Container>
         </>
-     );
+    );
 }
- 
+
 export default ListShops;

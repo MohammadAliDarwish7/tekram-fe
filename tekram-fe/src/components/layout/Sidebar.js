@@ -24,9 +24,6 @@ const Sidebar = () => {
                 <Nav.Link as={NavLink} to="/Shops" className="text-white d-flex align-items-center">
                     <FaUser className="me-2" /> Shops
                 </Nav.Link>
-                <Nav.Link as={NavLink} to="/Products" className="text-white d-flex align-items-center">
-                    <FaCog className="me-2" /> Products
-                </Nav.Link>
                 <Nav.Link as={NavLink} to="/Orders" className="text-white d-flex align-items-center">
                     <FaCog className="me-2" /> Orders
                 </Nav.Link>
